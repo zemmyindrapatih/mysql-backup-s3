@@ -2,12 +2,32 @@
 
 set -eo pipefail
 
-if [ "${S3_ACCESS_KEY_ID}" == "**None**" ]; then
-  echo "Warning: You did not set the S3_ACCESS_KEY_ID environment variable."
+# echo "MYSQLDUMP_OPTIONS: $MYSQLDUMP_OPTIONS,"
+# echo "MYSQLDUMP_EXTRA_OPTIONS: $MYSQLDUMP_EXTRA_OPTIONS,"
+# echo "MYSQLDUMP_DATABASE: $MYSQLDUMP_DATABASE,"
+# echo "MYSQL_HOST: $MYSQL_HOST,"
+# echo "MYSQL_PORT: $MYSQL_PORT,"
+# echo "MYSQL_USER: $MYSQL_USER,"
+# echo "MYSQL_PASSWORD: $MYSQL_PASSWORD,"
+# echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID,"
+# echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY,"
+# echo "S3_BUCKET: $S3_BUCKET,"
+# echo "AWS_REGION: $AWS_REGION,"
+# echo "S3_ENDPOINT: $S3_ENDPOINT,"
+# echo "S3_S3V4: $S3_S3V4,"
+# echo "S3_PREFIX: $S3_PREFIX,"
+# echo "S3_FILENAME: $S3_FILENAME,"
+# echo "S3_ENSURE_BUCKET_EXISTS: $S3_ENSURE_BUCKET_EXISTS,"
+# echo "MULTI_FILES: $MULTI_FILES,"
+# echo "SCHEDULE: $SCHEDULE,"
+
+
+if [ "${AWS_ACCESS_KEY_ID}" == "**None**" ]; then
+  echo "Warning: You did not set the AWS_ACCESS_KEY_ID environment variable."
 fi
 
-if [ "${S3_SECRET_ACCESS_KEY}" == "**None**" ]; then
-  echo "Warning: You did not set the S3_SECRET_ACCESS_KEY environment variable."
+if [ "${AWS_SECRET_ACCESS_KEY}" == "**None**" ]; then
+  echo "Warning: You did not set the AWS_SECRET_ACCESS_KEY environment variable."
 fi
 
 if [ "${S3_BUCKET}" == "**None**" ]; then
@@ -32,9 +52,9 @@ fi
 
 if [ "${S3_IAMROLE}" != "true" ]; then
   # env vars needed for aws tools - only if an IAM role is not used
-  export AWS_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID
-  export AWS_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
-  export AWS_DEFAULT_REGION=$S3_REGION
+  export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+  export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+  export AWS_DEFAULT_REGION=$AWS_REGION
 fi
 
 MYSQL_HOST_OPTS="-h $MYSQL_HOST -P $MYSQL_PORT -u$MYSQL_USER -p$MYSQL_PASSWORD"
@@ -53,7 +73,7 @@ copy_s3 () {
   if [ "${S3_ENSURE_BUCKET_EXISTS}" != "no" ]; then
     echo "Ensuring S3 bucket $S3_BUCKET exists"
     EXISTS_ERR=`aws $AWS_ARGS s3api head-bucket --bucket "$S3_BUCKET" 2>&1 || true`
-    if [[ ! -z "$EXISTS_ERR" ]]; then
+    if [[ "$EXISTS_ERR" == *"An error occurred (404)"* ]]; then
       echo "Bucket $S3_BUCKET not found (or owned by someone else), attempting to create"
       aws $AWS_ARGS s3api create-bucket --bucket $S3_BUCKET
     fi
@@ -67,7 +87,7 @@ copy_s3 () {
     >&2 echo "Error uploading ${DEST_FILE} on S3"
   fi
 
-  rm $SRC_FILE
+  rm -f $SRC_FILE
 }
 
 # mysqldump extra options
