@@ -2,30 +2,29 @@
 
 set -eo pipefail
 
-if [ -e /tmp/backup.lock ]
-then
+if [ -e /tmp/backup.lock ]; then
   echo "Skip.. Previous backup still running."
 else
   touch /tmp/backup.lock
 
-# echo "MYSQLDUMP_OPTIONS: $MYSQLDUMP_OPTIONS,"
-# echo "MYSQLDUMP_EXTRA_OPTIONS: $MYSQLDUMP_EXTRA_OPTIONS,"
-# echo "MYSQLDUMP_DATABASE: $MYSQLDUMP_DATABASE,"
-# echo "MYSQL_HOST: $MYSQL_HOST,"
-# echo "MYSQL_PORT: $MYSQL_PORT,"
-# echo "MYSQL_USER: $MYSQL_USER,"
-# echo "MYSQL_PASSWORD: $MYSQL_PASSWORD,"
-# echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID,"
-# echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY,"
-# echo "S3_BUCKET: $S3_BUCKET,"
-# echo "AWS_REGION: $AWS_REGION,"
-# echo "S3_ENDPOINT: $S3_ENDPOINT,"
-# echo "S3_S3V4: $S3_S3V4,"
-# echo "S3_PREFIX: $S3_PREFIX,"
-# echo "S3_FILENAME: $S3_FILENAME,"
-# echo "S3_ENSURE_BUCKET_EXISTS: $S3_ENSURE_BUCKET_EXISTS,"
-# echo "MULTI_FILES: $MULTI_FILES,"
-# echo "SCHEDULE: $SCHEDULE,"
+  # echo "MYSQLDUMP_OPTIONS: $MYSQLDUMP_OPTIONS,"
+  # echo "MYSQLDUMP_EXTRA_OPTIONS: $MYSQLDUMP_EXTRA_OPTIONS,"
+  # echo "MYSQLDUMP_DATABASE: $MYSQLDUMP_DATABASE,"
+  # echo "MYSQL_HOST: $MYSQL_HOST,"
+  # echo "MYSQL_PORT: $MYSQL_PORT,"
+  # echo "MYSQL_USER: $MYSQL_USER,"
+  # echo "MYSQL_PASSWORD: $MYSQL_PASSWORD,"
+  # echo "AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID,"
+  # echo "AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY,"
+  # echo "S3_BUCKET: $S3_BUCKET,"
+  # echo "AWS_REGION: $AWS_REGION,"
+  # echo "S3_ENDPOINT: $S3_ENDPOINT,"
+  # echo "S3_S3V4: $S3_S3V4,"
+  # echo "S3_PREFIX: $S3_PREFIX,"
+  # echo "S3_FILENAME: $S3_FILENAME,"
+  # echo "S3_ENSURE_BUCKET_EXISTS: $S3_ENSURE_BUCKET_EXISTS,"
+  # echo "MULTI_FILES: $MULTI_FILES,"
+  # echo "SCHEDULE: $SCHEDULE,"
 
 
   if [ "${AWS_ACCESS_KEY_ID}" == "**None**" ]; then
